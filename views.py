@@ -3,6 +3,7 @@ from flask import render_template, request, Response
 import os
 from helpers import *
 from conta_tokens import *
+from resumidor import criando_resumo
 
 @app.route("/")
 def home():
@@ -19,15 +20,14 @@ def chat():
 
 def trata_resposta(prompt, contexto, nome_do_arquivo):
     resposta_parcial = ''
-    limite_maximo_tokens = 2048
-    historico_parcial = limita_historico(historico, limite_maximo_tokens)
-    for resposta in bot(prompt, historico_parcial):
+    historico_resumido = criando_resumo(contexto)
+    for resposta in bot(prompt, historico_resumido):
         pedaco_da_resposta = resposta.choices[0].delta.get('content','')
         if len(pedaco_da_resposta):
             resposta_parcial += pedaco_da_resposta
             yield pedaco_da_resposta 
     conteudo = f"""
-    Historico: {historico_parcial}
+    Historico: {historico_resumido}
     Usuario: {prompt}
     IA: {resposta_parcial}
     """

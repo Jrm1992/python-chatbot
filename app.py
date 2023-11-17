@@ -14,20 +14,7 @@ openai.api_key = os.getenv("OPENAI_API_KEY")
 
 openai.api_base = "http://localhost:8080/v1"
 
-from views import *
-
-def limita_historico(historico, limite_maximo_tokens):
-    total_tokens = 0
-    historico_parcial = ''
-    for linha in reversed(historico.split('\n')):
-        tokens_linha = conta_tokens(linha)
-        total_tokens = total_tokens + tokens_linha
-        if total_tokens > limite_maximo_tokens:
-            break
-        historico_parcial = linha + '\n' + historico_parcial
-    return historico_parcial
-
-        
+from views import *        
 
 dados_ecommerce = carrega("dados_ecommerce.txt")
 
@@ -59,10 +46,6 @@ def bot(prompt, contexto):
                 ],
                 stream = True,
                 temperature=1,
-                max_tokens=256,
-                top_p=1,
-                frequency_penalty=0,
-                presence_penalty=0,
                 model = model)
             return response
         except Exception as erro:
